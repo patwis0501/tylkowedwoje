@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b1020">
+<title>Kupony — Seria I</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="top">
+  <div><h1>Kupony — Seria I</h1><p>Tracker 205 kart</p></div>
+  <button id="modeBtn" class="secondary">Tryb MG</button>
+</header>
+<nav class="tabs">
+  <button data-tab="dashboard" class="active">Pulpit</button>
+  <button data-tab="cards">Karty</button>
+  <button data-tab="effects">Efekty</button>
+  <button data-tab="random">Losowania</button>
+  <button data-tab="rules">Słowniczek</button>
+  <button data-tab="history">Historia</button>
+  <button data-tab="gm" class="gm-only hidden">MG</button>
+</nav>
+<main>
+<section id="dashboard" class="tab active">
+  <div class="stats" id="stats"></div>
+  <div class="panel"><h2>Najbliższe cooldowny</h2><div id="cooldownList" class="stack"></div></div>
+  <div class="panel"><h2>Aktywne efekty</h2><div id="activeEffectsShort" class="stack"></div></div>
+</section>
+
+<section id="cards" class="tab">
+  <div class="panel filters">
+    <input id="search" placeholder="Szukaj po nazwie lub ID">
+    <select id="rarityFilter"><option value="">Wszystkie rangi</option><option>UNIQUE</option><option>LEGENDARY</option><option>EPIC</option><option>RARE</option><option>COMMON</option></select>
+    <select id="statusFilter"><option value="">Wszystkie statusy</option><option value="available">Dostępne</option><option value="used">Zużyte</option><option value="sacrificed">Poświęcone</option><option value="cooldown">Cooldown</option><option value="restored">Odzyskane</option></select>
+  </div>
+  <div id="cardList" class="card-list"></div>
+</section>
+
+<section id="effects" class="tab">
+  <div class="panel"><h2>Dodaj aktywny efekt</h2>
+    <div class="form-grid">
+      <input id="effectName" placeholder="Nazwa efektu">
+      <input id="effectHours" type="number" min="0" step="1" placeholder="Czas w godzinach">
+      <textarea id="effectNote" placeholder="Notatka"></textarea>
+      <button id="addEffect">Dodaj efekt</button>
+    </div>
+  </div>
+  <div class="panel"><h2>Aktywne</h2><div id="activeEffects" class="stack"></div></div>
+</section>
+
+<section id="random" class="tab">
+  <div class="random-grid">
+    <div class="panel"><h2>Moneta</h2><button data-roll="coin">Rzuć</button><div class="result" id="coinResult">—</div></div>
+    <div class="panel"><h2>d4</h2><button data-roll="4">Rzuć</button><div class="result" id="d4Result">—</div></div>
+    <div class="panel"><h2>d6</h2><button data-roll="6">Rzuć</button><div class="result" id="d6Result">—</div></div>
+    <div class="panel"><h2>d20</h2><button data-roll="20">Rzuć</button><div class="result" id="d20Result">—</div></div>
+  </div>
+
+  <div class="panel">
+    <h2>Wheel of Fortune</h2>
+    <div class="row"><button id="wheelRoll">Rzuć d20</button><button id="wheelReroll" class="secondary">Przerzut</button></div>
+    <div id="wheelResult" class="result big">—</div>
+    <label>Monkey's Paw
+      <select id="pawSelect"><option>I</option><option>II</option><option>III</option></select>
+    </label>
+    <div id="pawText" class="hint"></div>
+  </div>
+
+  <div class="panel">
+    <h2>Goliat</h2>
+    <p>Kość dziesiątek i jedności z zestawu d100 traktujemy jako dwa niezależne d10. 0/00 = 10.</p>
+    <button id="goliathRoll">Rzuć Goliatem</button>
+    <div id="goliathResult" class="result big">—</div>
+  </div>
+
+  <div class="panel">
+    <h2>Chaotyczne D4</h2>
+    <p>Wybierz niewykorzystany numer 1–20. Natura ujawnia się po wyborze.</p>
+    <div id="chaosNumbers" class="number-grid"></div>
+    <div id="chaosReveal" class="result big">—</div>
+  </div>
+</section>
+
+<section id="rules" class="tab">
+  <div class="panel"><h2>Słowniczek</h2><div id="glossary"></div></div>
+  <div class="panel"><h2>Zasady nadrzędne</h2>
+    <p>Aktywacja wymaga fizycznego zniszczenia kuponu. Poświęcenie niszczy kartę bez aktywacji. Cooldown dotyczy tylko kart o tej samej nazwie i rozpoczyna się po pełnym zakończeniu efektu.</p>
+    <p>Zgoda, bezpieczeństwo i realne granice są ważniejsze niż każda karta.</p>
+  </div>
+</section>
+
+<section id="history" class="tab">
+  <div class="panel row"><button id="exportBtn">Eksport stanu</button><label class="fileLabel">Import stanu<input id="importInput" type="file" accept=".json"></label></div>
+  <div class="panel"><h2>Historia</h2><div id="historyList" class="stack"></div></div>
+</section>
+
+<section id="gm" class="tab gm-only hidden">
+  <div class="panel"><h2>Tryb Mistrza Gry</h2><p>Informacje ukryte przed Zuzią.</p><h3>In Blanco</h3><div id="inBlancoSecret"></div></div>
+  <div class="panel"><h2>Mapa Chaotycznego D4</h2><div id="chaosSecret"></div></div>
+</section>
+</main>
+
+<div id="modal" class="modal hidden">
+  <div class="modal-box"><button id="closeModal" class="close">×</button><div id="modalBody"></div></div>
+</div>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
