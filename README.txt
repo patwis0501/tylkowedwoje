@@ -1,11 +1,13 @@
-Kupony — Seria I PWA
+KUPONY — SERIA I: DEMONIC v4
 
-Najprościej:
-- wrzuć wszystkie pliki na hosting statyczny albo uruchom w folderze: python -m http.server 8000
-- otwórz http://localhost:8000
-- na telefonie wybierz „Dodaj do ekranu głównego”.
+WGRANIE NA GITHUB PAGES:
+1. Rozpakuj ZIP.
+2. W repozytorium GitHub zastąp dotychczasowe pliki zawartością tego ZIP-a.
+3. Najważniejszy plik to index.html.
+4. Zacommituj zmiany do gałęzi publikowanej przez GitHub Pages.
 
-Stan zapisuje się lokalnie w przeglądarce. Zakładka Historia pozwala eksportować/importować backup JSON.
-Tryb MG ma PIN ustawiany przy pierwszym wejściu.
-
-Uwaga: przycisk „Aktywuj” uruchamia bazowy cooldown od chwili kliknięcia. Dla kart, których cooldown ma zacząć się dopiero po wielogodzinnym efekcie, użyj sekcji Aktywne efekty i potem ustaw cooldown ręcznie. W kolejnej wersji można to zautomatyzować per karta.
+UWAGA:
+- Ta wersja jest samodzielna — cała aplikacja, style i dane są w index.html.
+- Stare app.js, data.js, styles.css, sw.js i manifest.webmanifest nie są potrzebne.
+- v4 wyrejestrowuje wcześniejszy service worker, aby ograniczyć problem ze starym cache'em.
+- Przed aktualizacją warto wyeksportować stan gry do JSON.
