@@ -34,7 +34,7 @@ main{max-width:980px;margin:auto;padding:1rem}.tab{display:none}.tab.active{disp
 </head>
 <body>
 <header class="top">
-  <div><h1>Kupony — Seria I</h1><p>Tracker 205 kart</p></div>
+  <div><h1>Kupony — Seria I</h1><p>Panel gry</p></div>
   <button id="modeBtn" class="secondary">Tryb MG</button>
 </header>
 <nav class="tabs">
@@ -44,17 +44,20 @@ main{max-width:980px;margin:auto;padding:1rem}.tab{display:none}.tab.active{disp
   <button data-tab="random">Losowania</button>
   <button data-tab="rules">Słowniczek</button>
   <button data-tab="history">Historia</button>
-  <button data-tab="demonic">DEMONIC</button>
-  <button data-tab="cemetery">Cmentarz</button>
+  <button data-tab="demonic" class="gm-only hidden">DEMONIC</button>
+  <button data-tab="cemetery" class="gm-only hidden">Cmentarz</button>
   <button data-tab="gm" class="gm-only hidden">MG</button>
 </nav>
 <main>
 <section id="dashboard" class="tab active">
-  <div class="stats" id="stats"></div>
-  <div class="panel demonic"><h2>🔥 Stan kampanii DEMONIC</h2><div id="campaignNow"></div></div>
-  <div class="panel"><h2>Stan gry</h2><div id="gameKpis" class="kpi-grid"></div></div>
+  <div class="panel"><h2>Twoje kupony</h2><div id="playerSummary" class="kpi-grid"></div></div>
   <div class="panel"><h2>Najbliższe cooldowny</h2><div id="cooldownList" class="stack"></div></div>
   <div class="panel"><h2>Aktywne efekty</h2><div id="activeEffectsShort" class="stack"></div></div>
+  <div class="gm-only hidden">
+    <div class="stats" id="stats"></div>
+    <div class="panel demonic"><h2>🔥 Stan kampanii DEMONIC</h2><div id="campaignNow"></div></div>
+    <div class="panel"><h2>Pełny stan gry MG</h2><div id="gameKpis" class="kpi-grid"></div></div>
+  </div>
 </section>
 
 <section id="cards" class="tab">
@@ -127,11 +130,11 @@ main{max-width:980px;margin:auto;padding:1rem}.tab{display:none}.tab.active{disp
 <button id="snapshotBtn" class="secondary">Utwórz checkpoint</button>
 <button id="restoreSnapshotBtn" class="secondary">Przywróć checkpoint</button>
 </div>
-<div class="panel"><h2>Integralność save'a</h2><div id="saveHealth"></div></div>
+<div class="panel gm-only hidden"><h2>Integralność save'a</h2><div id="saveHealth"></div></div>
   <div class="panel"><h2>Historia</h2><div id="historyList" class="stack"></div></div>
 </section>
 
-<section id="demonic" class="tab">
+<section id="demonic" class="tab gm-only hidden">
   <div class="panel demonic"><h2>DEMONIC — oś eventów I-01–I-12</h2>
     <div class="toolbar"><button id="syncEvents" class="danger">Synchronizuj eventy z datą</button><button id="previewNext" class="secondary">Pokaż następny event</button></div>
     <p class="hint">Synchronizacja wykonuje tylko deterministyczne zmiany systemowe. Przed operacją tworzony jest punkt cofnięcia.</p>
@@ -161,7 +164,7 @@ main{max-width:980px;margin:auto;padding:1rem}.tab{display:none}.tab.active{disp
     <div id="sealedContracts" class="stack"></div>
   </div>
 </section>
-<section id="cemetery" class="tab">
+<section id="cemetery" class="tab gm-only hidden">
   <div class="panel"><h2>⚰️ Cmentarz</h2><div id="cemeteryStats"></div>
     <div class="toolbar gm-only hidden">
       <button id="openCharon" class="danger">I-04: Otwórz Cmentarz</button>
@@ -293,7 +296,12 @@ function logSacrifice(c,source='ręcznie'){
 function renderStats(){
  const a=D.cards.filter(c=>['available','restored'].includes(cstate(c))).length;
  const rows=[['Dostępne',a],['Wykorzystane',countStatus('used')],['Poświęcone',countStatus('sacrificed')],['Zamrożone',countStatus('frozen')]];
- stats.innerHTML=rows.map(x=>`<div class=stat><span>${x[0]}</span><b>${x[1]}</b></div>`).join('');
+ if(typeof stats!=='undefined'&&stats)stats.innerHTML=rows.map(x=>`<div class=stat><span>${x[0]}</span><b>${x[1]}</b></div>`).join('');
+ if(typeof playerSummary!=='undefined'&&playerSummary){
+   const activeCD=Object.values(S.typeCooldowns||{}).filter(u=>u&&new Date(u)>new Date()).length;
+   const activeFx=(S.effects||[]).filter(e=>!e.until||new Date(e.until)>new Date()).length;
+   playerSummary.innerHTML=[['Dostępne kupony',a],['Aktywne cooldowny',activeCD],['Aktywne efekty',activeFx]].map(x=>`<div class=kpi><span class=hint>${x[0]}</span><b>${x[1]}</b></div>`).join('');
+ }
 }
 function renderCampaign(){
  const active=DEMONIC.filter(e=>eventState(e)==='AKTYWNY');
@@ -312,7 +320,7 @@ function renderCampaign(){
 }
 function renderCD(){
  const by={};D.cards.forEach(c=>{const u=S.typeCooldowns[c.type];if(u&&new Date(u)>new Date())by[c.type]={c,u}});
- const arr=Object.values(by).sort((a,b)=>new Date(a.u)-new Date(b.u)).slice(0,10);
+ const arr=Object.values(by).sort((a,b)=>new Date(a.u)-new Date(b.u)).slice(0,S.gm?10:3);
  cooldownList.innerHTML=arr.length?arr.map(x=>`<div><b>${x.c.name}</b> <span class=meta>${x.c.type}</span><div class=hint>do ${fmt(x.u)}</div></div>`).join(''):'<div class=hint>Brak aktywnych cooldownów.</div>';
 }
 function renderCards(){
